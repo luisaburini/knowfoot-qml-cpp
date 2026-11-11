@@ -20,6 +20,8 @@ qt_add_qml_module(appknowfoot
         RESOURCES imgs/back.png  imgs/fpiAbduction0.png imgs/fpiAbduction1.png imgs/fpiAbduction2.png imgs/fpiAbduction-1.png imgs/fpiAbduction-2.png imgs/fpiATN0.png imgs/fpiATN1.png imgs/fpiATN2.png imgs/fpiATN-1.png imgs/fpiATN-2.png imgs/fpiCalcaneus0.png imgs/fpiCalcaneus1.png imgs/fpiCalcaneus2.png imgs/fpiCalcaneus-1.png imgs/fpiCalcaneus-2.png imgs/fpiLongitudinal0.png imgs/fpiLongitudinal1.png imgs/fpiLongitudinal2.png imgs/fpiLongitudinal-1.png imgs/fpiLongitudinal-2.png imgs/fpiMalleolus0.png imgs/fpiMalleolus1.png imgs/fpiMalleolus2.png imgs/fpiMalleolus-1.png imgs/fpiMalleolus-2.png imgs/fpiTalus0.png imgs/fpiTalus1.png imgs/fpiTalus2.png imgs/fpiTalus-1.png imgs/fpiTalus-2.png
         QML_FILES screens/FPIAbductionScreen.qml
         RESOURCES imgs/knowfoot-logo.png
+        QML_FILES screens/TestsModel.qml
+        QML_FILES screens/TutorialModel.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

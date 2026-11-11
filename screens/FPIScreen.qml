@@ -6,16 +6,25 @@ import QtMultimedia
 
 Item{
     id: fpiScreen
+
     state: "Init"
+
     anchors.fill: parent
     onVisibleChanged: {
+        if (fpiScreen.visible === true) {
+            fpiScreen.state = "PhotoCapture"
+        }
         if (fpiScreen.visible === false || fpiScreen.state === "Init") {
             camera.stop()
+        } else {
+            camera.start()
         }
     }
     onStateChanged: {
         if (fpiScreen.visible === false || fpiScreen.state === "Init") {
             camera.stop()
+        } else {
+            camera.start()
         }
     }
 
@@ -23,6 +32,7 @@ Item{
 
     signal clickedLevel(int level)
     signal nextPage()
+    signal previousPage()
 
     property var descriptionText
 
@@ -55,19 +65,21 @@ Item{
                 text: qsTr("KnowFoot")
                 font.pixelSize: 60
                 font.bold: true
+                width: 400
             }
             Rectangle{
                 color: "#00000000"
                 border.color: "#1c009e"
                 border.width: 3
                 radius: 20
-
+                width: 400
                 Text {
                     text: qsTr("F.P.I.")
                     color: "#1c009e"
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     font.pointSize: 24
+                    width: 400
                 }
             }
 
@@ -78,6 +90,7 @@ Item{
                 font.pointSize: 24
                 color: "#1c009e"
                 horizontalAlignment: Text.AlignHCenter
+                width: 400
             }
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -248,13 +261,15 @@ Item{
                     console.log("State: " + controlLayout.state)
                 }
             }
-            Rectangle {
+            Image {
+                id: photoPreview
                 width: 600
                 height: 400
-                color: "#000000"
+                source: imageCapture.preview
+                fillMode: Image.PreserveAspectFit
+                smooth: true
                 CameraPermission {
                     id: cameraPermission
-
                     onStatusChanged: {
                         // In case the application does not already have permissions at startup
                         if (status === Qt.PermissionStatus.Granted && fpiScreen.state === "PhotoCapture") {
@@ -300,7 +315,7 @@ Item{
             Row{
                 Button {
                     text: qsTr("Voltar")
-                    width: 300
+                    width: 200
                     height: 50
                     font.pixelSize: 30
                     background: Rectangle{
@@ -316,10 +331,38 @@ Item{
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
+                    onClicked: {
+                        fpiScreen.previousPage()
+                    }
+                }
+                Button {
+                    text: qsTr("Tirar Foto")
+                    width: 200
+                    height: 50
+                    font.pixelSize: 30
+                    visible: imageCapture.readyForCapture
+                    background: Rectangle{
+                        opacity: parent.down ? 0.1 : 0.3
+                        radius: 30
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        font: parent.font
+                        opacity: enabled ? 1.0 : 0.3
+                        color: parent.down ? "#575976" : "#1c009e"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
+                    onClicked: {
+                        camera.stop()
+                        imageCapture.captureToFile("")
+                        photoPreview.source = imageCapture.preview
+                    }
                 }
                 Button {
                     text: qsTr("Próximo")
-                    width: 300
+                    width: 200
                     height: 50
                     font.pixelSize: 30
                     background: Rectangle{
@@ -352,6 +395,7 @@ Item{
             Text {
                 id: errorMessage
                 visible: false
+                width: 400
                 color: "#FF0000"
                 font.pixelSize: 20
                 wrapMode: Text.WordWrap

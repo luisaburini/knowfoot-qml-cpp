@@ -11,6 +11,14 @@ Window {
     ResultsScreen{
         id: resultsScreen
         visible: false
+        onRedoTest: {
+            resultsScreen.visible = false
+            testScreen.visible = true
+        }
+        onNewTest: {
+            resultsScreen.visible = false
+            testScreen.visible = true
+        }
     }
 
     FPITalusScreen{
@@ -26,6 +34,11 @@ Window {
                                     fpiTalusScreen.level)
             resultsScreen.visible = true
         }
+        onPreviousPage: {
+            fpiTalusScreen.visible = false
+            fpiATNScreen.visible = true
+            fpiATNScreen.state = "PhotoCapture"
+        }
     }
     FPIATNScreen{
         id: fpiATNScreen
@@ -33,6 +46,12 @@ Window {
         onNextPage: {
             fpiATNScreen.visible = false
             fpiTalusScreen.visible = true
+            fpiTalusScreen.state = "PhotoCapture"
+        }
+        onPreviousPage: {
+            fpiATNScreen.visible = false
+            fpiLongitudinalScreen.visible = true
+            fpiLongitudinalScreen.state = "PhotoCapture"
         }
     }
     FPILongitudinalScreen{
@@ -41,6 +60,12 @@ Window {
         onNextPage: {
             fpiLongitudinalScreen.visible = false
             fpiATNScreen.visible = true
+            fpiATNScreen.state = "PhotoCapture"
+        }
+        onPreviousPage: {
+            fpiLongitudinalScreen.visible = false
+            fpiCalcaneousScreen.visible = true
+            fpiCalcaneousScreen.state = "PhotoCapture"
         }
     }
     FPICalcaneusScreen{
@@ -49,6 +74,12 @@ Window {
         onNextPage: {
             fpiCalcaneousScreen.visible = false
             fpiLongitudinalScreen.visible = true
+            fpiLongitudinalScreen.state = "PhotoCapture"
+        }
+        onPreviousPage: {
+            fpiCalcaneousScreen.visible = false
+            fpiAbductionScreen.visible = true
+            fpiAbductionScreen.state = "PhotoCapture"
         }
     }
     FPIAbductionScreen{
@@ -56,7 +87,13 @@ Window {
         visible: false
         onNextPage: {
             fpiAbductionScreen.visible = false
-            fpiCalcaneousScreen.visible =true
+            fpiCalcaneousScreen.visible = true
+            fpiCalcaneousScreen.state = "PhotoCapture"
+        }
+        onPreviousPage: {
+            fpiAbductionScreen.visible = false
+            fpiMalleolusScreen.visible = true
+            fpiMalleolusScreen.state = "PhotoCapture"
         }
     }
     FPIMalleolusScreen{
@@ -65,6 +102,11 @@ Window {
         onNextPage: {
             fpiMalleolusScreen.visible = false
             fpiAbductionScreen.visible = true
+            fpiAbductionScreen.state = "PhotoCapture"
+        }
+        onPreviousPage: {
+            fpiMalleolusScreen.visible = false
+            testScreen.visible = true
         }
     }
 
@@ -81,13 +123,14 @@ Window {
     TestScreen{
         id: testScreen
         visible: false
-        onClickedFPILeft: {
+        onClickedFPI: {
             testScreen.visible = false
             fpiMalleolusScreen.visible = true
         }
-        onClickedFPIRight: {
+        onClickedNavicular: {
             testScreen.visible = false
-            fpiMalleolusScreen.visible = true
+            fpiMalleolusScreen.visible = false
+            homeScreen.visible = true
         }
         onBackHome: {
             testScreen.visible = false

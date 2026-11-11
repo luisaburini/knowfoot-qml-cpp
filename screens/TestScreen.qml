@@ -1,173 +1,162 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import QtQuick.Window
+import "."
 
 Item {
     id: test
     anchors.fill: parent
 
-    signal clickedFPILeft()
-    signal clickedFPIRight()
+    property int whichTest
+    property bool isEvaluation
 
-    signal clickedNavicularLeft()
-    signal clickedNavicularRight()
+    onVisibleChanged: {
+        if (test.visible) {
+            test.whichTest = -2
+            test.isEvaluation = true
+        }
+    }
+    onWhichTestChanged: {
+        console.log("Which test changed " + test.whichTest)
+        if (test.whichTest === 0) {
+            test.clickedFPI()
+        }
+        if (test.whichTest === 1) {
+            test.clickedNavicular()
+        }
+    }
+
+    signal clickedFPI()
+    signal clickedNavicular()
+
 
     signal backHome()
 
     Rectangle {
         id: name
-        color: "#f7fafe"
-        anchors.centerIn: parent
+        color: "#f6fbff"
+        anchors.fill: parent
+        Layout.fillWidth: true
         Column{
             spacing: 2
             anchors.centerIn: parent
-            Row{
-                Button{
-                    background: Image {
-                        id: backHome
-                        source: "../imgs/back.png"
-                    }
-                    onClicked: test.backHome()
-                }
-                Text {
-                    id: title
-                    text: qsTr("KnowFoot")
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignTop
-                    color: "#09325f"
-                    font.pointSize: 60
-                    font.bold: true
-                }
-            }
             Text {
                 text: qsTr("Testes")
                 padding: 10
-                horizontalAlignment: Text.AlignHCenter
+                width: 400
+                font.bold: true
+                horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignTop
                 font.pointSize: 24
                 color: "#09325f"
             }
-            Column{
-                spacing: 2
-                Text {
-                    text: qsTr("FPI")
-                    padding: 10
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignTop
-                    color: "#09325f"
-                    font.pointSize: 20
+            SearchField {
+                width: 400
+                background: Rectangle{
+                    radius: 40
+                    color: "white"
+                    anchors.fill: parent
                 }
-                Text {
-                    text: qsTr("O FPI é um método altamente recomendado para identificar qual tipo de pisada que uma pessoa possui. É composto por 6 medições")
-                    padding: 10
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignTop
-                    color: "#09325f"
-                    wrapMode: Text.WordWrap
-                }
-                Row{
-                    spacing: 10
-                    Button{
-                        text: qsTr("Pé esquerdo")
-                        height: 50
+                searchIndicator.indicator: null
+                clearIndicator.indicator: null
+            }
+
+            ButtonGroup { id: group }
+            Row {
+                Button {
+                    id: evalButton
+                    text: qsTr("Avaliações")
+                    font.bold: true
+                    font.pointSize: 10
+                    width: 200
+                    background: Rectangle {
                         width: 200
-                        font.pixelSize: 30
-                        background: Rectangle{
-                            opacity: parent.down ? 0.1 : 0.3
-                            radius: 20
-                            color: "#4c7db7"
-                        }
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            opacity: enabled ? 1.0 : 0.3
-                            color: parent.down ? "#575976" : "#09325f"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        onClicked: test.clickedFPILeft()
+                        color: "#4473b3"
                     }
-                    Button{
-                        text: qsTr("Pé direito")
-                        height: 50
+                    onClicked: {
+                        test.isEvaluation = true
+                    }
+                    ButtonGroup.group: group
+                }
+                Button {
+                    id: tutorialButton
+                    text: qsTr("Tutoriais")
+                    font.pointSize: 10
+                    width: 200
+                    background: Rectangle {
                         width: 200
-                        font.pixelSize: 30
-                        background: Rectangle{
-                            opacity: parent.down ? 0.1 : 0.3
-                            radius: 20
-                            color: "#4c7db7"
+                        color: "#deeeff"
+                    }
+                    onClicked: {
+                        test.isEvaluation = false
+                    }
+                    ButtonGroup.group: group
+                }
+            }
+
+            Rectangle {
+
+                width: 400
+                height: 700
+
+                Component {
+                    id: testsDelegate
+                    Item {
+                        id: testItem
+                        required property string name
+                        required property string description
+                        width: 400
+                        height: 100
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                test.whichTest = testsListView.currentIndex
+                                console.log("BUTTON CLICKED which test " + test.whichTest)
+                            }
+                            Rectangle{
+                                color: "#fbfdff"
+                                radius: 20
+                                anchors.fill: parent
+                                Row {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    spacing: 10
+                                    Item { height: 1; width: 5 }
+                                    Image {
+                                        id: listIcon
+                                        source: "../imgs/knowfoot-logo.png"
+                                        height: 50
+                                        fillMode: Image.PreserveAspectFit
+                                    }
+                                    Column {
+                                        spacing: 5
+                                        Text {
+                                            text: testItem.name
+                                            font.bold: true
+                                            font.pointSize: 15
+                                            color: "#09325f"
+                                        }
+                                        Text {
+                                            text: testItem.description
+                                            font.pointSize: 10
+                                            color: "#8f9aca"
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            opacity: enabled ? 1.0 : 0.3
-                            color: parent.down ? "#575976" : "#09325f"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        onClicked: test.clickedFPIRight()
+
+
                     }
                 }
-                Text {
-                    text: qsTr("DROP DO NAVICULAR")
-                    color: "#09325f"
-                    padding: 10
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignTop
-                    font.pointSize: 20
-                }
-                Text{
-                    text: qsTr("Identifica o tipo de pé por meio da diferença da altura do osso navicular entre as posturas sentada e em pé")
-                    color: "#09325f"
-                    padding: 10
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignTop
-                    wrapMode: Text.WordWrap
-                }
-                Row{
-                    spacing: 10
-                    Button{
-                        text: qsTr("Pé esquerdo")
-                        height: 50
-                        font.pixelSize: 30
-                        background: Rectangle{
-                            opacity: parent.down ? 0.1 : 0.3
-                            radius: 20
-                            color: "#4c7db7"
-                        }
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            opacity: enabled ? 1.0 : 0.3
-                            color: parent.down ? "#575976" : "#09325f"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        onClicked: test.clickedNavicularLeft()
-                    }
-                    Button{
-                        text: qsTr("Pé direito")
-                        height: 50
-                        font.pixelSize: 30
-                        background: Rectangle{
-                            opacity: parent.down ? 0.1 : 0.3
-                            radius: 20
-                            color: "#4c7db7"
-                        }
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            opacity: enabled ? 1.0 : 0.3
-                            color: parent.down ? "#575976" : "#09325f"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        onClicked: test.clickedNavicularRight()
-                    }
+
+                ListView {
+                    id: testsListView
+                    anchors.fill: parent
+                    model: TestsModel {}
+                    delegate: testsDelegate
+                    highlight: Rectangle { color: "white"; radius: 20 }
+                    focus: true
                 }
             }
         }
