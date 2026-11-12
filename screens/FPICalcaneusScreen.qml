@@ -5,6 +5,7 @@ import QtMultimedia
 import "."
 
 FPIScreen {
-    descriptionText: "Posição do calcâneo"
+    descriptionText: "FPI - Critério 3\nPosição do calcâneo"
     wordForImage: "Calcaneus"
+    step: 3
 }

@@ -1,15 +1,16 @@
 import QtCore
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Material
 import QtQuick.Layouts
 import QtMultimedia
 
 Item{
     id: fpiScreen
-
     state: "Init"
+    width: Screen.width
+    height: Screen.height
 
-    anchors.fill: parent
     onVisibleChanged: {
         if (fpiScreen.visible === true) {
             fpiScreen.state = "PhotoCapture"
@@ -17,6 +18,7 @@ Item{
         if (fpiScreen.visible === false || fpiScreen.state === "Init") {
             camera.stop()
         } else {
+            cameraPermission.request()
             camera.start()
         }
     }
@@ -29,19 +31,24 @@ Item{
     }
 
     property var level
+    property var descriptionText
+    property var step
+        property var wordForImage
 
     signal clickedLevel(int level)
     signal nextPage()
     signal previousPage()
 
-    property var descriptionText
-
 
     onDescriptionTextChanged: {
         description.text = descriptionText
     }
-
-    property var wordForImage
+    onStepChanged: {
+        progressBar.from = 0
+        progressBar.to = 6
+        progressBar.value = step
+        progressText.text = step.toString() + " de 6"
+    }
 
     onWordForImageChanged: {
         imageMinusTwo.source = "../imgs/fpi"+wordForImage+"-2.png"
@@ -55,52 +62,61 @@ Item{
     Rectangle {
         id: name
         color: "#f7fafe"
-        anchors.fill: parent
+        width: Screen.width;
+        height: Screen.height;
         Column {
-            anchors.centerIn: parent
-            spacing: 2
-            Text {
-                id: title
-                color: "#1c009e"
-                text: qsTr("KnowFoot")
-                font.pixelSize: 60
-                font.bold: true
-                width: 400
-            }
-            Rectangle{
-                color: "#00000000"
-                border.color: "#1c009e"
-                border.width: 3
-                radius: 20
-                width: 400
-                Text {
-                    text: qsTr("F.P.I.")
-                    color: "#1c009e"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.pointSize: 24
-                    width: 400
-                }
-            }
-
-            Text {
-                id: description
-                text: qsTr("")
-                wrapMode: Text.WordWrap
-                font.pointSize: 24
-                color: "#1c009e"
-                horizontalAlignment: Text.AlignHCenter
-                width: 400
+            width: Screen.width
+            spacing: 10
+            padding: 10
+            Item{
+                height: 10
+                width: Screen.width
             }
             Row {
+                width: Screen.width
+                spacing: 10
+                Item {
+                    width: 10
+                    height: 10
+                }
+                Text {
+                    id: progressText
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 20
+                    font.bold: true
+                    color: "#1c009e"
+                }
+                ProgressBar{
+                    id: progressBar
+                    height: 50
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            Text {
+                id: description
+                wrapMode: Text.WordWrap
+                font.pointSize: 24
+                font.bold: true
+                color: "#1c009e"
+                width: Screen.width
+                height: Screen.height/10
+            }
+            Row {
+                id: fpiLevelRow
+                width: Screen.width
+                leftPadding: 20
+                rightPadding: 20
+                spacing: (-40+Screen.width/6)/6
                 anchors.horizontalCenter: parent.horizontalCenter
                 Button {
+                    width: Screen.width/6
                     background: Image{
                         id: imageMinusTwo
                         source: "../imgs/fpiMalleolus-2.png"
+                        width: Screen.width/6
+                        fillMode: Image.PreserveAspectCrop
                         Rectangle {
                             id: borderMinusTwo
-                            radius: 20
                             border.color: "#1c009e"
                             border.width: 0
                             anchors.fill: parent
@@ -123,12 +139,14 @@ Item{
                     }
                 }
                 Button {
+                    width: Screen.width/6
                     background: Image{
                         id: imageMinusOne
                         source: "../imgs/fpiMalleolus-1.png"
+                        width: Screen.width/6
+                        fillMode: Image.PreserveAspectCrop
                         Rectangle {
                             id: borderMinusOne
-                            radius: 20
                             border.color: "#1c009e"
                             border.width: 0
                             anchors.fill: parent
@@ -151,14 +169,16 @@ Item{
                     }
                 }
                 Button {
+                    width: Screen.width/6
                     background: Image{
                         id: imageZero
                         source: "../imgs/fpiMalleolus0.png"
+                        width: Screen.width/6
+                        fillMode: Image.PreserveAspectCrop
                         Rectangle {
                             id: borderZero
                             border.color: "#1c009e"
                             border.width: 0
-                            radius: 20
                             anchors.fill: parent
                             color: "#00000000"
                         }
@@ -179,14 +199,16 @@ Item{
                     }
                 }
                 Button {
+                    width: Screen.width/6
                     background: Image{
                         id: imageOne
                         source: "../imgs/fpiMalleolus1.png"
+                        width: Screen.width/6
+                        fillMode: Image.PreserveAspectCrop
                         Rectangle {
                             id: borderOne
                             border.color: "#1c009e"
                             border.width: 0
-                            radius: 20
                             anchors.fill: parent
                             color: "#00000000"
                         }
@@ -207,14 +229,16 @@ Item{
                     }
                 }
                 Button {
+                    width: Screen.width/6
                     background: Image{
                         id: imageTwo
                         source: "../imgs/fpiMalleolus2.png"
+                        width: Screen.width/6
+                        fillMode: Image.PreserveAspectCrop
                         Rectangle {
                             id: borderTwo
                             border.color: "#1c009e"
                             border.width: 0
-                            radius: 20
                             anchors.fill: parent
                             color: "#00000000"
                         }
@@ -226,14 +250,19 @@ Item{
                             borderMinusTwo.border.width = 0
                             borderMinusOne.border.width = 0
                             borderZero.border.width = 0
-                            borderOne.border.width = 0
                             borderTwo.border.width = 5
+                            borderOne.border.width = 0
                             fpiScreen.clickedLevel(2)
                             fpiScreen.level = 2
                             errorMessage.visible = false
                         }
                     }
                 }
+            }
+            Text{
+                text: qsTr("Foto (opcional)")
+                color: "#1c009e"
+                font.pixelSize: 30
             }
             Item {
                 id: controlLayout
@@ -263,10 +292,11 @@ Item{
             }
             Image {
                 id: photoPreview
-                width: 600
-                height: 400
-                source: imageCapture.preview
-                fillMode: Image.PreserveAspectFit
+                width: Screen.width
+                height: Screen.height/3
+                //source: imageCapture.preview
+                //source: "../imgs/capture.png"
+                fillMode: Image.PreserveAspectCrop
                 smooth: true
                 CameraPermission {
                     id: cameraPermission
@@ -284,13 +314,6 @@ Item{
                     // In case the application already has permissions at startup
                     if (cameraPermission.status === Qt.PermissionStatus.Granted)
                         camera.start()
-                }
-                Text{
-                    text: qsTr("FOTO")
-                    color: "#1c009e"
-                    font.pixelSize: 30
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
                 }
                 CaptureSession {
                     id: captureSession
@@ -315,9 +338,9 @@ Item{
             Row{
                 Button {
                     text: qsTr("Voltar")
-                    width: 200
+                    width: Screen.width/3
                     height: 50
-                    font.pixelSize: 30
+                    font.pixelSize: 20
                     background: Rectangle{
                         opacity: parent.down ? 0.1 : 0.3
                         radius: 30
@@ -337,9 +360,9 @@ Item{
                 }
                 Button {
                     text: qsTr("Tirar Foto")
-                    width: 200
+                    width: Screen.width/3
                     height: 50
-                    font.pixelSize: 30
+                    font.pixelSize: 20
                     visible: imageCapture.readyForCapture
                     background: Rectangle{
                         opacity: parent.down ? 0.1 : 0.3
@@ -356,15 +379,16 @@ Item{
                     }
                     onClicked: {
                         camera.stop()
-                        imageCapture.captureToFile("")
+                        imageCapture.captureToFile("../imgs/capture.png")
+                        photoPreview.source = "../imgs/capture.png"
                         photoPreview.source = imageCapture.preview
                     }
                 }
                 Button {
                     text: qsTr("Próximo")
-                    width: 200
+                    width: Screen.width/3
                     height: 50
-                    font.pixelSize: 30
+                    font.pixelSize: 20
                     background: Rectangle{
                         opacity: parent.down ? 0.1 : 0.3
                         radius: 30

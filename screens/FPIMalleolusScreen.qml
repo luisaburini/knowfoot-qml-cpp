@@ -1,6 +1,7 @@
 import "."
 
 FPIScreen{
-    descriptionText: "Curvaturas acima e abaixo do maléolo lateral"
+    descriptionText: "FPI - Critério 1\nCurvaturas acima e abaixo do maléolo lateral"
     wordForImage: "Malleolus"
+    step: 1
 }

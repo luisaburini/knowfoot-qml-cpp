@@ -21,23 +21,12 @@ Item{
         anchors.fill: parent
         Column {
             anchors.centerIn: parent
-            spacing: 2
-            Text {
-                id: title
-                color: "#09325f"
-                text: qsTr("KnowFoot")
-                font.pixelSize: 60
-                font.bold: true
-                horizontalAlignment: Text.AlignJustify
-            }
-            Text {
-                text: qsTr("Nome preenchido dinamicamente")
-                color: "#09325f"
-            }
+            spacing: 20
             Text {
                 id: resultsText
                 text: qsTr("Resultados")
                 color: "#09325f"
+                font.pixelSize: 20
             }
             Button{
                 text: qsTr("Refazer teste")

@@ -1,6 +1,7 @@
 import "."
 
 FPIScreen {
-    descriptionText: "Altura do arco longitudinal medial"
+    descriptionText: "FPI - Critério 4\nAltura do arco longitudinal medial"
     wordForImage: "Longitudinal"
+    step: 4
 }

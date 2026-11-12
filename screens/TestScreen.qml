@@ -48,7 +48,7 @@ Item {
                 font.bold: true
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignTop
-                font.pointSize: 24
+                font.pointSize: 30
                 color: "#09325f"
             }
             SearchField {
@@ -68,7 +68,7 @@ Item {
                     id: evalButton
                     text: qsTr("Avaliações")
                     font.bold: true
-                    font.pointSize: 10
+                    font.pointSize: 20
                     width: 200
                     background: Rectangle {
                         width: 200
@@ -82,7 +82,7 @@ Item {
                 Button {
                     id: tutorialButton
                     text: qsTr("Tutoriais")
-                    font.pointSize: 10
+                    font.pointSize: 20
                     width: 200
                     background: Rectangle {
                         width: 200
@@ -133,12 +133,12 @@ Item {
                                         Text {
                                             text: testItem.name
                                             font.bold: true
-                                            font.pointSize: 15
+                                            font.pointSize: 20
                                             color: "#09325f"
                                         }
                                         Text {
                                             text: testItem.description
-                                            font.pointSize: 10
+                                            font.pointSize: 15
                                             color: "#8f9aca"
                                         }
                                     }

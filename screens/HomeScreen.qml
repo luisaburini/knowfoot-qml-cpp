@@ -15,7 +15,8 @@ Item{
         anchors.fill: parent
         Column {
             anchors.centerIn: parent
-            spacing: 2
+            spacing: 20
+            padding: 20
             Row {
                 Image {
                     height: 70
@@ -43,6 +44,10 @@ Item{
                     verticalAlignment: Text.AlignVCenter
                 }
             }
+            Item {
+                width: Screen.width
+                height: 20
+            }
             Text {
                 id: ola
                 text: qsTr("Olá!")
@@ -58,6 +63,10 @@ Item{
                 height: 30
                 color: "#4c7db7"
                 horizontalAlignment: Text.AlignLeft
+            }
+            Item {
+                width: Screen.width
+                height: 20
             }
             Rectangle {
                 color: "#dfebfb"
