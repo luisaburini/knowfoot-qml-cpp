@@ -11,6 +11,8 @@ Item{
     width: Screen.width
     height: Screen.height
 
+    property bool isRequesting: false
+
     onVisibleChanged: {
         if (fpiScreen.visible === true) {
             fpiScreen.state = "PhotoCapture"
@@ -18,7 +20,10 @@ Item{
         if (fpiScreen.visible === false || fpiScreen.state === "Init") {
             camera.stop()
         } else {
-            cameraPermission.request()
+            if (!!fpiScreen.isRequesting) {
+                cameraPermission.request()
+                fpiScreen.isRequesting = true
+            }
             camera.start()
         }
     }
@@ -26,6 +31,10 @@ Item{
         if (fpiScreen.visible === false || fpiScreen.state === "Init") {
             camera.stop()
         } else {
+            if (!!fpiScreen.isRequesting) {
+                cameraPermission.request()
+                fpiScreen.isRequesting = true
+            }
             camera.start()
         }
     }
@@ -294,16 +303,18 @@ Item{
                 id: photoPreview
                 width: Screen.width
                 height: Screen.height/3
-                //source: imageCapture.preview
-                //source: "../imgs/capture.png"
+                source: imageCapture.preview
                 fillMode: Image.PreserveAspectCrop
                 smooth: true
                 CameraPermission {
                     id: cameraPermission
                     onStatusChanged: {
                         // In case the application does not already have permissions at startup
-                        if (status === Qt.PermissionStatus.Granted && fpiScreen.state === "PhotoCapture") {
-                            cameraPermission.request()
+                        if (fpiScreen.state === "PhotoCapture") {
+                            if (!!fpiScreen.isRequesting) {
+                                cameraPermission.request()
+                                fpiScreen.isRequesting = true
+                            }
                             camera.start()
                        } else if (status === Qt.PermissionStatus.Denied || fpiScreen.state !== "PhotoCapture") {
                             camera.stop()
@@ -312,8 +323,11 @@ Item{
                 }
                 Component.onCompleted: {
                     // In case the application already has permissions at startup
-                    if (cameraPermission.status === Qt.PermissionStatus.Granted)
-                        camera.start()
+                    if (!!fpiScreen.isRequesting) {
+                        cameraPermission.request()
+                        fpiScreen.isRequesting = true
+                    }
+                    camera.start()
                 }
                 CaptureSession {
                     id: captureSession
@@ -331,7 +345,6 @@ Item{
                 }
                 VideoOutput {
                     id: viewfinder
-                    visible: (fpiScreen.state === "PhotoCapture")
                     anchors.fill: parent
                 }
             }
@@ -358,30 +371,60 @@ Item{
                         fpiScreen.previousPage()
                     }
                 }
-                Button {
-                    text: qsTr("Tirar Foto")
-                    width: Screen.width/3
-                    height: 50
-                    font.pixelSize: 20
-                    visible: imageCapture.readyForCapture
-                    background: Rectangle{
-                        opacity: parent.down ? 0.1 : 0.3
-                        radius: 30
+                Column {
+                    Button {
+                        text: qsTr("Tirar Foto")
+                        width: Screen.width/3
+                        height: 50
+                        font.pixelSize: 20
+                        visible: imageCapture.readyForCapture
+                        background: Rectangle{
+                            opacity: parent.down ? 0.1 : 0.3
+                            radius: 30
+                        }
+                        contentItem: Text {
+                            text: parent.text
+                            font: parent.font
+                            opacity: enabled ? 1.0 : 0.3
+                            color: parent.down ? "#575976" : "#1c009e"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                        onClicked: {
+                            camera.stop()
+                            fpiScreen.state = "PhotoPreview"
+                            imageCapture.captureToFile("")
+                            viewfinder.visible = false
+                            cleanPhotoPreview.visible = true
+                        }
                     }
-                    contentItem: Text {
-                        text: parent.text
-                        font: parent.font
-                        opacity: enabled ? 1.0 : 0.3
-                        color: parent.down ? "#575976" : "#1c009e"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        elide: Text.ElideRight
-                    }
-                    onClicked: {
-                        camera.stop()
-                        imageCapture.captureToFile("../imgs/capture.png")
-                        photoPreview.source = "../imgs/capture.png"
-                        photoPreview.source = imageCapture.preview
+                    Button {
+                        id: cleanPhotoPreview
+                        text: qsTr("Limpar Foto")
+                        width: Screen.width/3
+                        height: 50
+                        font.pixelSize: 20
+                        visible: false
+                        onClicked: {
+                            fpiScreen.state = "PhotoCapture"
+                            viewfinder.visible = true
+                            cleanPhotoPreview.visible = false
+                            camera.start()
+                        }
+                        background: Rectangle{
+                            opacity: parent.down ? 0.1 : 0.3
+                            radius: 30
+                        }
+                        contentItem: Text {
+                            text: parent.text
+                            font: parent.font
+                            opacity: enabled ? 1.0 : 0.3
+                            color: parent.down ? "#575976" : "#1c009e"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
                     }
                 }
                 Button {

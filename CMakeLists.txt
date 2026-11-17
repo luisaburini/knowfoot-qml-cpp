@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 
+find_package(Qt6 REQUIRED COMPONENTS Multimedia)
+
 qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appknowfoot
@@ -24,6 +26,11 @@ qt_add_qml_module(appknowfoot
         QML_FILES screens/TutorialModel.qml
 )
 
+qt_add_android_permission(
+    appknowfoot
+    NAME android.permission.CAMERA
+)
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
@@ -33,10 +40,13 @@ set_target_properties(appknowfoot PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
+    QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android"
 )
+
 
 target_link_libraries(appknowfoot
     PRIVATE Qt6::Quick
+    PRIVATE Qt6::Multimedia
 )
 
 include(GNUInstallDirs)
